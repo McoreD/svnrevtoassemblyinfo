@@ -1,0 +1,1 @@
+SVNRevToAssemblyInfo.exe "H:\Users\Mihajlo\Documents\Visual Studio 2008\Projects\Google Code\ZScreen\trunk" "H:\Users\Mihajlo\Documents\Visual Studio 2008\Projects\Google Code\ZScreen\trunk\ZScreen\Properties\AssemblyInfo.cs" > debug.txt
