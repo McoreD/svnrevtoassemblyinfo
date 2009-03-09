@@ -29,7 +29,10 @@ namespace SVNRevToAssemblyInfo
                     Console.WriteLine("Reading: " + args[1]);
                     ai = sr.ReadToEnd();
                     string version = "AssemblyVersion"; //AssemblyFileVersion
-                    ai = Regex.Replace(ai, "(?<=" + version + "\\(\"\\d+\\.\\d+.\\d+\\.)\\d+(?=\"\\)])", svn.Revision.ToString());
+                    int rev = 0;
+                    int.TryParse(svn.Revision.ToString(), out rev);
+                    rev++;
+                    ai = Regex.Replace(ai, "(?<=" + version + "\\(\"\\d+\\.\\d+.\\d+\\.)\\d+(?=\"\\)])", rev.ToString());
                 }
                 if (!string.IsNullOrEmpty(ai))
                 {
