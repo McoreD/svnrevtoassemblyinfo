@@ -23,20 +23,17 @@ namespace SVNRevToAssemblyInfo
                 Console.WriteLine("Last Commited Date: " + svn.Date);
                 Console.WriteLine("SVN: " + svn.Url);
 
-                // Open AssemblyInfo for writing
                 string ai = "";
                 using (StreamReader sr = new StreamReader(args[1]))
                 {
-                    // Read
                     Console.WriteLine("Reading: " + args[1]);
                     ai = sr.ReadToEnd();
-                    // Overwrite the Rev number 
-                    ai = Regex.Replace(ai, "9999", svn.Revision.ToString());
+                    string version = "AssemblyVersion"; //AssemblyFileVersion
+                    ai = Regex.Replace(ai, "(?<=" + version + "\\(\"\\d+\\.\\d+.\\d+\\.)\\d+(?=\"\\)])", svn.Revision.ToString());
                 }
-                using (StreamWriter sw = new StreamWriter(args[1]))
+                if (!string.IsNullOrEmpty(ai))
                 {
-                    // Write new file
-                    if (!string.IsNullOrEmpty(ai))
+                    using (StreamWriter sw = new StreamWriter(args[1]))
                     {
                         sw.WriteLine(ai);
                     }
