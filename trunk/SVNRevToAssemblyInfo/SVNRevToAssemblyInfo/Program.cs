@@ -38,7 +38,10 @@ namespace SVNRevToAssemblyInfo
                 {
                     using (StreamWriter sw = new StreamWriter(args[1]))
                     {
+                        Console.WriteLine("Writing: " + args[1]);
                         sw.WriteLine(ai);
+                        Console.WriteLine(Environment.NewLine);
+                        Console.WriteLine(ai);
                     }
                 }
             }
