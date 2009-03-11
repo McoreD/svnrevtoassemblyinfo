@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
-using NDesk.Options;
 using CommandLineParserLib;
 using System.Reflection;
+using SharpSvn.Implementation; 
 
 namespace SVNRevToAssemblyInfo
 {
@@ -33,7 +33,6 @@ namespace SVNRevToAssemblyInfo
             string pAssemblyInfo = "";
 
             StringBuilder sbDebug = new StringBuilder();
-          
 
             CommandLineParser parser = new CommandLineParser();
             parser.CommandLine = GetCommandLine();
