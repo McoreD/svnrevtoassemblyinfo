@@ -5,7 +5,8 @@ using System.IO;
 using System.Text.RegularExpressions;
 using CommandLineParserLib;
 using System.Reflection;
-using SharpSvn.Implementation; 
+using SharpSvn.Implementation;
+using SharpSvn; 
 
 namespace SVNRevToAssemblyInfo
 {
@@ -77,12 +78,17 @@ namespace SVNRevToAssemblyInfo
             if (!string.IsNullOrEmpty(pWorkingdir) && !string.IsNullOrEmpty(pAssemblyInfo))
             {
                 sbDebug.AppendLine("Working folder: " + pWorkingdir);
-                LibSubWCRev.SubWCRevClass svn = new LibSubWCRev.SubWCRevClass();
-                svn.GetWCInfo(pWorkingdir, true, true);
-                sbDebug.AppendLine("Latest Revision: " + svn.Revision);
-                sbDebug.AppendLine("Last Author: " + svn.Author);
-                sbDebug.AppendLine("Last Commited Date: " + svn.Date);
-                sbDebug.AppendLine("SVN: " + svn.Url);
+
+                SvnClient sc = new SvnClient();
+                SharpSvn.SvnTarget st = SvnTarget.FromString(pWorkingdir);
+                SvnInfoEventArgs svnInfo;
+                sc.GetInfo(st, out svnInfo);
+                Console.WriteLine(svnInfo.Revision);
+                                                
+                sbDebug.AppendLine("Latest Revision: " + svnInfo.Revision);
+                sbDebug.AppendLine("Last Author: " + svnInfo.LastChangeAuthor);
+                sbDebug.AppendLine("Last Commited Date: " + svnInfo.LastChangeTime);
+                sbDebug.AppendLine("SVN: " + svnInfo.Uri);
 
                 string ai = "";
                 using (StreamReader sr = new StreamReader(pAssemblyInfo))
@@ -91,7 +97,7 @@ namespace SVNRevToAssemblyInfo
                     ai = sr.ReadToEnd();
                     string version = "AssemblyVersion"; //AssemblyFileVersion
                     int rev = 0;
-                    int.TryParse(svn.Revision.ToString(), out rev);
+                    int.TryParse(svnInfo.Revision.ToString(), out rev);
                     rev++;
                     ai = Regex.Replace(ai, "(?<=" + version + "\\(\"\\d+\\.\\d+.\\d+\\.)\\d+(?=\"\\)])", rev.ToString());
                 }
