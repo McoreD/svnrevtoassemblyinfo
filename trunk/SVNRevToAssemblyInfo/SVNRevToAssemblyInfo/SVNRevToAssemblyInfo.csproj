@@ -33,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLineParserLib, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="Interop.LibSubWCRev, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="SharpSvn, Version=1.5005.984.35067, Culture=neutral, PublicKeyToken=d729672594885a28, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -45,10 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CommandLineParserLib.dll" />
-    <Content Include="Interop.LibSubWCRev.dll" />
+    <Content Include="SharpSvn-DB44-20-win32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SharpSvn-Sasl21-22-win32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SharpSvn.dll" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="SharpPlink-Win32.svnExe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Testers\zscreen-mike.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

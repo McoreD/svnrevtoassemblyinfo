@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SVNRevToAssemblyInfo")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Console Application to write SVN Revision Number into AssemblyInfo")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("BetaONE")]
 [assembly: AssemblyProduct("SVNRevToAssemblyInfo")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2009")]
+[assembly: AssemblyCopyright("Copyright © McoreD 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
