@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using CommandLineParserLib;
 using System.Reflection;
 using SharpSvn.Implementation;
-using SharpSvn; 
+using SharpSvn;
 
 namespace SVNRevToAssemblyInfo
 {
@@ -25,9 +25,10 @@ namespace SVNRevToAssemblyInfo
 
             return cli;
         }
+
         static void Main(string[] args)
         {
-            // args[0] is the trunk folder 
+            // args[0] is the trunk folder
             // args[1] is the file path of AssemblyInfo.cs or AssemblyInfo.vb
 
             string pWorkingdir = "";
@@ -84,7 +85,7 @@ namespace SVNRevToAssemblyInfo
                 SvnInfoEventArgs svnInfo;
                 sc.GetInfo(st, out svnInfo);
                 Console.WriteLine(svnInfo.Revision);
-                                                
+
                 sbDebug.AppendLine("Latest Revision: " + svnInfo.Revision);
                 sbDebug.AppendLine("Last Author: " + svnInfo.LastChangeAuthor);
                 sbDebug.AppendLine("Last Commited Date: " + svnInfo.LastChangeTime);
@@ -106,7 +107,7 @@ namespace SVNRevToAssemblyInfo
                     using (StreamWriter sw = new StreamWriter(pAssemblyInfo))
                     {
                         sbDebug.AppendLine("Writing: " + pAssemblyInfo);
-                        sw.WriteLine(ai);
+                        sw.Write(ai);
                         sbDebug.AppendLine(Environment.NewLine);
                         sbDebug.Append(ai);
                     }
@@ -119,7 +120,6 @@ namespace SVNRevToAssemblyInfo
             {
                 sw.WriteLine(sbDebug.ToString());
             }
-
         }
     }
 }
