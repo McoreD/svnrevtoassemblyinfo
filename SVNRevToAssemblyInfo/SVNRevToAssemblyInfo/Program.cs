@@ -108,7 +108,7 @@ namespace SVNRevToAssemblyInfo
                         sbDebug.AppendLine("Writing: " + pAssemblyInfo);
                         sw.WriteLine(ai);
                         sbDebug.AppendLine(Environment.NewLine);
-                        sbDebug.AppendLine(ai);
+                        sbDebug.Append(ai);
                     }
                 }
             }
