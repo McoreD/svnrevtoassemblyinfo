@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SVNRevToAssemblyInfo")]
 [assembly: AssemblyDescription("Console Application to write SVN Revision Number into AssemblyInfo")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("BetaONE")]
+[assembly: AssemblyCompany("ZScreen Developers")]
 [assembly: AssemblyProduct("SVNRevToAssemblyInfo")]
-[assembly: AssemblyCopyright("Copyright © McoreD 2009")]
+[assembly: AssemblyCopyright("Copyright © McoreD 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.6003.1304.38397")]
-[assembly: AssemblyFileVersion("1.6003.1304.38397")]
+[assembly: AssemblyVersion("1.7000.1934.11812")]
+[assembly: AssemblyFileVersion("1.7000.1934.11812")]
