@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using CommandLineParserLib;
-using System.Reflection;
-using SharpSvn.Implementation;
 using SharpSvn;
+using SharpSvn.Implementation;
 
 namespace SVNRevToAssemblyInfo
 {
-    class Program
+    internal class Program
     {
+        static StringBuilder sbDebug = new StringBuilder();
+
         const string FLAG_WORKING_DIR = "dir";
         const string FLAG_ASSEMBLY_INFO = "file";
+        const string FLAG_AUTO = "auto";
+        const string FLAG_UPDATE = "update";
 
-        static string GetCommandLine()
+        private static string GetCommandLine()
         {
             string cli = Environment.CommandLine;
             cli = cli.Replace(Path.GetFileName(Assembly.GetExecutingAssembly().Location), "").Trim();
@@ -26,15 +30,15 @@ namespace SVNRevToAssemblyInfo
             return cli;
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // args[0] is the trunk folder
             // args[1] is the file path of AssemblyInfo.cs or AssemblyInfo.vb
 
             string pWorkingdir = "";
             string pAssemblyInfo = "";
-
-            StringBuilder sbDebug = new StringBuilder();
+            bool bAuto = false;
+            bool bUpdate = false;
 
             CommandLineParser parser = new CommandLineParser();
             parser.CommandLine = GetCommandLine();
@@ -53,6 +57,9 @@ namespace SVNRevToAssemblyInfo
             fileArg = parser.CreateEntry(CommandTypeEnum.ExistingFile);
             fileArg.MustFollowEntry = fileVal;
             parser.Entries.Add(fileArg);
+
+            parser.Entries.Add(parser.CreateEntry(CommandTypeEnum.Flag, FLAG_AUTO));
+            parser.Entries.Add(parser.CreateEntry(CommandTypeEnum.Flag, FLAG_UPDATE));
 
             if (parser.Parse())
             {
@@ -73,10 +80,18 @@ namespace SVNRevToAssemblyInfo
                             pAssemblyInfo = parser.Entries.get_Item(++i).Value;
                         }
                     }
+                    else if (entry.Value.Equals(FLAG_AUTO))
+                    {
+                        bAuto = true;
+                    }
+                    else if (entry.Value.Equals(FLAG_UPDATE))
+                    {
+                        bUpdate = true;
+                    }
                 }
             }
 
-            if (!string.IsNullOrEmpty(pWorkingdir) && !string.IsNullOrEmpty(pAssemblyInfo))
+            if (!string.IsNullOrEmpty(pWorkingdir))
             {
                 sbDebug.AppendLine("Working folder: " + pWorkingdir);
 
@@ -84,41 +99,57 @@ namespace SVNRevToAssemblyInfo
                 SharpSvn.SvnTarget st = SvnTarget.FromString(pWorkingdir);
                 SvnInfoEventArgs svnInfo;
                 sc.GetInfo(st, out svnInfo);
-                Console.WriteLine(svnInfo.Revision);
+                Console.WriteLine("Current Revision: " + svnInfo.Revision);
+
+                if (bUpdate)
+                {
+                    Console.WriteLine("Updating SVN");
+                    sc.Update(pWorkingdir);
+                    sc.GetInfo(st, out svnInfo);
+                }
 
                 sbDebug.AppendLine("Latest Revision: " + svnInfo.Revision);
                 sbDebug.AppendLine("Last Author: " + svnInfo.LastChangeAuthor);
                 sbDebug.AppendLine("Last Commited Date: " + svnInfo.LastChangeTime);
                 sbDebug.AppendLine("SVN: " + svnInfo.Uri);
 
-                string ai = "";
-                using (StreamReader sr = new StreamReader(pAssemblyInfo))
+                if (File.Exists(pAssemblyInfo))
                 {
-                    sbDebug.AppendLine("Reading: " + pAssemblyInfo);
-                    ai = sr.ReadToEnd();
-                    string version = "AssemblyVersion"; //AssemblyFileVersion
-                    int rev = 0;
-                    int.TryParse(svnInfo.Revision.ToString(), out rev);
-                    rev++;
-                    ai = Regex.Replace(ai, "(?<=" + version + "\\(\"\\d+\\.\\d+.\\d+\\.)\\d+(?=\"\\)])", rev.ToString());
+                    UpdateFile(svnInfo.Revision.ToString(), pAssemblyInfo);
                 }
-                if (!string.IsNullOrEmpty(ai))
+                else if (bAuto)
                 {
-                    using (StreamWriter sw = new StreamWriter(pAssemblyInfo))
+                    List<string> files = new List<string>();
+                    files.AddRange(Directory.GetFiles(pWorkingdir, "AssemblyInfo*.cs", SearchOption.AllDirectories));
+                    foreach (string cs in files)
                     {
-                        sbDebug.AppendLine("Writing: " + pAssemblyInfo);
-                        sw.Write(ai);
-                        sbDebug.AppendLine(Environment.NewLine);
-                        sbDebug.Append(ai);
+                        UpdateFile(svnInfo.Revision.ToString(), cs);
                     }
                 }
             }
 
             Console.WriteLine(sbDebug.ToString());
+        }
 
-            using (StreamWriter sw = new StreamWriter("debug.log"))
+        private static void UpdateFile(string svnVersion, string pAssemblyInfo)
+        {
+            string ai = "";
+            using (StreamReader sr = new StreamReader(pAssemblyInfo))
             {
-                sw.WriteLine(sbDebug.ToString());
+                ai = sr.ReadToEnd();
+                string version = "AssemblyVersion"; //AssemblyFileVersion
+                int rev = 0;
+                int.TryParse(svnVersion, out rev);
+                rev++;
+                ai = Regex.Replace(ai, "(?<=" + version + "\\(\"\\d+\\.\\d+.\\d+\\.)\\d+(?=\"\\)])", rev.ToString());
+            }
+            if (!string.IsNullOrEmpty(ai))
+            {
+                using (StreamWriter sw = new StreamWriter(pAssemblyInfo))
+                {
+                    sbDebug.AppendLine("Writing: " + pAssemblyInfo);
+                    sw.Write(ai);
+                }
             }
         }
     }
